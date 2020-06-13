@@ -10,13 +10,13 @@ import Foundation
 import UIKit
 
 protocol SearchViewProtocol: BaseViewProtocol {
-    func showRepositories()
-    func showResultSearch(searchText: String?)
+    func showRepositories(repositories: [Repository])
+    func showSearchResult(findedRepositories: [Repository])
 }
 
 class SearchTableViewController: BaseViewController {
     
-    let dataSource = GithubDataSource()
+    var repositories = [Repository]()
     private var presenter:SearchPresenter<SearchTableViewController>?
     
     override func viewDidLoad() {
@@ -32,6 +32,20 @@ class SearchTableViewController: BaseViewController {
         navigationItem.searchController = search
         
     }
+    
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        repositories.count
+    }
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        let repositorie = repositories[indexPath.row]
+        cell.textLabel?.text = repositorie.name
+        cell.detailTextLabel?.text = repositorie.description
+        return cell
+    }
+    
 }
 
 extension SearchTableViewController: UISearchResultsUpdating {
@@ -42,17 +56,17 @@ extension SearchTableViewController: UISearchResultsUpdating {
 }
 
 extension SearchTableViewController: SearchViewProtocol {
-    func showRepositories() {
-        
-        dataSource.dataChanged = {
-            [weak self] in self?.tableView.reloadData()
-        }
-        
-        dataSource.fetch()
-        self.tableView.dataSource = dataSource
+    func showRepositories(repositories: [Repository]) {
+        self.repositories = repositories
+        self.tableView.reloadData()
     }
     
-    func showResultSearch(searchText: String?) {
-        dataSource.searchRepository(searchText: searchText)
+    func showSearchResult(findedRepositories: [Repository]) {
+        
+        self.repositories = findedRepositories
+        self.tableView.reloadData()
+        
     }
 }
+
+

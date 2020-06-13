@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 class Repository: Codable {
     var id: Int
     var name: String
@@ -16,8 +15,6 @@ class Repository: Codable {
     var description: String?
     var owner:owner
 }
-
-
 
 struct owner: Codable {
     var avatar_url:String?

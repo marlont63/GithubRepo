@@ -12,10 +12,34 @@ import Foundation
 class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
     
     func  getGithubRepositories() {
-        self.view?.showRepositories()
+        
+        let manager = Manager()
+        let repositoryRequest = RepositoryRequest()
+        
+        manager.send(repositoryRequest, success: { (repositories) in
+            
+            self.view?.showRepositories(repositories: repositories)
+            
+        }, failure: { (punkError) in
+            print("Error")
+        })
     }
     
     func searchRepository(searchText: String?){
-        self.view?.showResultSearch(searchText: searchText)
+        
+        if let searchText = searchText, searchText.count > 0 {
+            
+            let manager = Manager()
+            let searchRepositoryRequest = SearchRepositoryRequest(searchQuery: searchText)
+            
+            manager.send(searchRepositoryRequest, success: { (findedRepositories) in
+                
+                self.view?.showSearchResult(findedRepositories: findedRepositories)
+                
+            }, failure: { (punkError) in
+                print("Error")
+            })
+            
+        }
     }
 }
