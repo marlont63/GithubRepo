@@ -10,7 +10,7 @@ import Foundation
 
 class RepositoryRequest {}
 
-extension RepositoryRequest: RequestService {
+extension RepositoryRequest: GithubApiRequest {
     
     var path: URL {
         let urlPath = "repositories"

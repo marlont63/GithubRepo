@@ -16,7 +16,7 @@ class SearchRepositoryRequest {
     }
 }
 
-extension SearchRepositoryRequest: RequestService {
+extension SearchRepositoryRequest: GithubApiRequest {
     
     var path: URL {
         

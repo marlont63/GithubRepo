@@ -9,94 +9,67 @@
 import Foundation
 import UIKit
 
-enum HTTPMethod: String {
-    case options = "OPTIONS"
-    case get     = "GET"
-    case head    = "HEAD"
-    case post    = "POST"
-    case put     = "PUT"
-    case patch   = "PATCH"
-    case delete  = "DELETE"
-    case trace   = "TRACE"
-    case connect = "CONNECT"
-}
 
-enum Result<T: Codable> {
-    case success(T?)
-    case error(GithubError)
-}
+class RequestService {}
 
-protocol RequestService {
-    
-    typealias HTTPHeaders = [String : String]
-    
-    associatedtype Response: Decodable
-    
-    var baseURL: URL { get }
-    
-    var path: URL { get }
-    
-    var method: HTTPMethod { get }
-    
-    var headers: HTTPHeaders { get }
-    
-    var timeout: TimeInterval { get }
-    
-    var sampleData: Data { get }
-}
-
-// Default params
 extension RequestService {
     
-    public var baseURL: URL {
-        return URL(string: "https://api.github.com/")!
-    }
-    
-    public var method: HTTPMethod {
-        return .get
-    }
-    
-    public var timeout: TimeInterval {
-        return 50
-    }
-    
-    public var headers: HTTPHeaders {
-        return ["Content-Type": "application/x-www-form-urlencoded"]
-    }
-    
-    public var sampleData: Data {
-        return Data()
-    }
-}
-
-// Protocol functions
-extension RequestService {
-    
-    func build() throws -> URLRequest {
+    public func send<Request: GithubApiRequest>(_ request: Request, success: @escaping (_ response: [Repository]) -> Void, failure: @escaping (_ error: GithubError) -> Void) {
         
-//        let url = path.isEmpty ? baseURL : URL(string: baseURL.appendingPathComponent(path).absoluteString.removingPercentEncoding!)!
+        let serverRequest: URLRequest
         
-        var request = URLRequest(url: path)
-        request.timeoutInterval = timeout
-        request.httpMethod = method.rawValue
-        
-        headers.forEach { key, value in
-            request.setValue(value, forHTTPHeaderField: key)
-        }
-        
-        return request
-    }
-    
-    func result(from data: Data) -> [Repository]{
-        
-        let decode = JSONDecoder()
+        do {
+            serverRequest = try request.build()
+        } catch {
             
-        if let response = try? decode.decode([Repository].self, from: data) {
-            return response
-        }else if let response = try? decode.decode(SearchRepository.self, from: data) {
-            return response.items
-        }else {
-            return []
+            DispatchQueue.main.async {
+                failure(.requestError(error))
+            }
+            return
         }
+        
+        serverRequest.showLog()
+        
+        let task = URLSession.shared.dataTask(with: serverRequest) { data, urlResponse, error in
+            
+            switch (data, urlResponse, error) {
+            case (let data, let urlResponse as HTTPURLResponse, let error?):
+                urlResponse.showLog(from: data)
+                
+                DispatchQueue.main.async {
+                    failure(.connectionError(error))
+                }
+            case (let data?, let urlResponse as HTTPURLResponse, _):
+                urlResponse.showLog(from: data)
+                
+                guard 200..<300 ~= urlResponse.statusCode else {
+                    DispatchQueue.main.async {
+                        failure(.wrongStatusCode(urlResponse.statusCode))
+                    }
+                    return
+                }
+                
+                let decode = JSONDecoder()
+                
+                var requestResult = [Repository]()
+                    
+                if let response = try? decode.decode([Repository].self, from: data) {
+                    requestResult = response
+                }else if let response = try? decode.decode(SearchRepository.self, from: data) {
+                    requestResult = response.items
+                }
+                
+                DispatchQueue.main.async {
+                    success(requestResult)
+                }
+                    
+            default:
+                DispatchQueue.main.async {
+                    failure(.nonURLResponse(urlResponse))
+                }
+            }
+        }
+        
+        task.resume()
     }
 }
