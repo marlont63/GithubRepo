@@ -14,5 +14,11 @@ class Repository: Codable {
     var name: String
     var full_name: String
     var description: String?
+    var owner:owner
 }
 
+
+
+struct owner: Codable {
+    var avatar_url:String?
+}
