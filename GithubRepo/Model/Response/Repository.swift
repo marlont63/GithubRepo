@@ -13,9 +13,13 @@ class Repository: Codable {
     var name: String
     var full_name: String
     var description: String?
+    var language: String?
+    var created_at: String?
+    var updated_at: String?
     var owner:owner
 }
 
 struct owner: Codable {
     var avatar_url:String?
+    var type: String
 }

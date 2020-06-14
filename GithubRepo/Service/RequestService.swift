@@ -30,7 +30,13 @@ extension RequestService {
         
         serverRequest.showLog()
         
-        let task = URLSession.shared.dataTask(with: serverRequest) { data, urlResponse, error in
+        let session = URLSession.shared
+        
+        session.getAllTasks { (tasks) in
+            tasks.forEach { $0.cancel() }
+        }
+        
+        let task = session.dataTask(with: serverRequest) { data, urlResponse, error in
             
             switch (data, urlResponse, error) {
             case (let data, let urlResponse as HTTPURLResponse, let error?):
