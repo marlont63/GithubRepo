@@ -38,4 +38,8 @@ class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
             getGithubRepositories()
         }
     }
+    
+    func goToRepositoryDetail(repository: Repository) {
+        self.view?.showGithubRepositoryDetail(repository: repository)
+    }
 }

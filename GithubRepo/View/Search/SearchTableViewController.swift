@@ -12,6 +12,7 @@ import UIKit
 protocol SearchViewProtocol: BaseViewProtocol {
     func showRepositories(repositories: [Repository])
     func showSearchResult(findedRepositories: [Repository])
+    func showGithubRepositoryDetail(repository:Repository)
 }
 
 class SearchTableViewController: BaseViewController {
@@ -46,6 +47,18 @@ class SearchTableViewController: BaseViewController {
         return cell
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showRepositoryDetail" {
+            if let destionation = segue.destination as? RepositoryDetailViewController {
+                destionation.repository = sender as? Repository
+            }
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let repository = self.repositories[indexPath.row]
+        presenter?.goToRepositoryDetail(repository: repository)
+    }
 }
 
 extension SearchTableViewController: UISearchResultsUpdating {
@@ -56,6 +69,10 @@ extension SearchTableViewController: UISearchResultsUpdating {
 }
 
 extension SearchTableViewController: SearchViewProtocol {
+    func showGithubRepositoryDetail(repository: Repository) {
+        performSegue(withIdentifier: "showRepositoryDetail", sender: repository)
+    }
+    
     func showRepositories(repositories: [Repository]) {
         self.repositories = repositories
         self.tableView.reloadData()
@@ -65,7 +82,6 @@ extension SearchTableViewController: SearchViewProtocol {
         
         self.repositories = findedRepositories
         self.tableView.reloadData()
-        
     }
 }
 
