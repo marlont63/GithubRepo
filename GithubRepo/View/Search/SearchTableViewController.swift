@@ -68,7 +68,7 @@ class SearchTableViewController: BaseViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 90;
+        return 100;
     }
 }
 
@@ -97,7 +97,7 @@ extension SearchTableViewController: SearchViewProtocol {
     func showResultError() {
         
         let noDataLabel: UILabel  = UILabel(frame: CGRect(x: 0, y: 0, width: self.tableView.bounds.size.width, height: self.tableView.bounds.size.height))
-        noDataLabel.text          = "API rate limit exceeded"
+        noDataLabel.text          = ""
         noDataLabel.textColor     = UIColor.black
         noDataLabel.textAlignment = .center
         self.tableView.backgroundView  = noDataLabel
@@ -115,17 +115,19 @@ extension SearchTableViewController: SearchViewProtocol {
     }
     
     func showGithubRepositoryDetail(repository: Repository) {
-        view.endEditing(true)
+        UIApplication.shared.sendAction(#selector(UIApplication.resignFirstResponder), to: nil, from: nil, for: nil);
         performSegue(withIdentifier: "showRepositoryDetail", sender: repository)
     }
     
     func showRepositories(repositories: [Repository]) {
         self.repositories = repositories
+        self.tableView.backgroundView = nil
         self.tableView.reloadData()
     }
     
     func showSearchResult(findedRepositories: [Repository]) {
         self.repositories = findedRepositories
+        self.tableView.backgroundView = nil
         self.tableView.reloadData()
     }
 }

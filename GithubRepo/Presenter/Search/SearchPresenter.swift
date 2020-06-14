@@ -24,7 +24,7 @@ class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
     
     func searchRepository(searchText: String?){
         
-        if let searchText = searchText, searchText.count > 3, searchText != "" {
+        if let searchText = searchText, searchText.count > 2, searchText != "" {
             self.view?.startActivityIndicator()
             self.view?.cleanTableView()
             let searchRepositoryRequest = SearchRepositoryRequest(searchQuery: searchText)
