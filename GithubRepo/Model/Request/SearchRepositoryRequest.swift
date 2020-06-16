@@ -10,9 +10,13 @@ import Foundation
 
 class SearchRepositoryRequest {
     var searchQuery:String
+    var page:String
+    var itemsPerPage:String
     
-    init(searchQuery: String) {
+    init(searchQuery: String, page:String, itemsPerPage:String) {
         self.searchQuery = searchQuery
+        self.page = page
+        self.itemsPerPage = itemsPerPage
     }
 }
 
@@ -25,7 +29,9 @@ extension SearchRepositoryRequest: GithubApiRequest {
         let parameters = [
             "q":searchQuery,
             "sort": "stars",
-            "order": "desc"
+            "order": "desc",
+            "page":page,
+            "per_page":itemsPerPage
         ]
         var completeURLComponents = URLComponents(string: baseURL.absoluteString + urlPath)!
         completeURLComponents.queryItems = parameters.map({ (key, value) -> URLQueryItem in
@@ -35,5 +41,5 @@ extension SearchRepositoryRequest: GithubApiRequest {
         return completeURLComponents.url ?? baseURL
     }
     
-    typealias Response = SearchRepository
+    typealias Response = SearchRepositoryResponse
 }

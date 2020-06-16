@@ -13,4 +13,5 @@ enum GithubError : Swift.Error {
     case requestError(Error)
     case nonURLResponse(URLResponse?)
     case wrongStatusCode(Int)
+    case wrongJsonFormat
 }

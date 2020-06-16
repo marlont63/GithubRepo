@@ -30,8 +30,6 @@ protocol GithubApiRequest {
     
     typealias HTTPHeaders = [String : String]
     
-    associatedtype Response: Decodable
-    
     var baseURL: URL { get }
     
     var path: URL { get }

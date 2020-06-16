@@ -43,12 +43,14 @@ class RepositoryDetailViewController: UIViewController {
         if let imageURL = repository.owner.avatar_url {
             if let url = URL(string: imageURL) {
                 
-                let data = try? Data(contentsOf: url)
-
-                if let imageData = data {
-                    let image = UIImage(data: imageData)
+                let requestService = RequestService()
+                requestService.downloadImage(from: url, success: { (avatarImage) in
+                    DispatchQueue.main.async {
+                        self.repositoryImage.image = avatarImage
+                    }
                     
-                    self.repositoryImage.image = image
+                }) { (GithubError) in
+                    print(GithubError.localizedDescription)
                 }
             }
         }

@@ -10,14 +10,15 @@ import Foundation
 import UIKit
 
 protocol SearchViewProtocol: BaseViewProtocol {
-    func showRepositories(repositories: [Repository])
     func showSearchResult(findedRepositories: [Repository])
     func showGithubRepositoryDetail(repository:Repository)
-    func showNoSearchResultMsg()
-    func showResultError()
+    func showNotFindedDataMensage(msg: String)
     func startActivityIndicator()
     func stopActivityIndicator()
-    func cleanTableView()
+    func cleanUpTableView()
+    func seachLimitExceeded()
+    func checkTotalItemsCount(totalCount: Int)
+    func showLoadMoreDataResult(repositories: [Repository])
 }
 
 class SearchTableViewController: BaseViewController {
@@ -25,6 +26,10 @@ class SearchTableViewController: BaseViewController {
     
     var repositories = [Repository]()
     private var presenter:SearchPresenter<SearchTableViewController>?
+    
+    private var currentPage = 1
+    private var shouldShowLoadingCell = false
+    private var searchQueryText = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,16 +46,25 @@ class SearchTableViewController: BaseViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return repositories.count
+        
+        let count = repositories.count
+        
+        return shouldShowLoadingCell ? count + 1 :  count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? RepositoryTableViewCell {
-            let repositorie = repositories[indexPath.row]
-            cell.config(repository: repositorie)
-            return cell
+        if isLoadingIndexPath(indexPath) {
+            return LoadingCell(style: .default, reuseIdentifier: "loading")
+        }else {
+            
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? RepositoryTableViewCell {
+                let repositorie = repositories[indexPath.row]
+                cell.config(repository: repositorie)
+                return cell
+            }
         }
+        
         return UITableViewCell()
     }
     
@@ -70,17 +84,44 @@ class SearchTableViewController: BaseViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100;
     }
+    
+    private func isLoadingIndexPath(_ indexPath: IndexPath) -> Bool {
+        guard shouldShowLoadingCell else { return false }
+        return indexPath.row == self.repositories.count
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard isLoadingIndexPath(indexPath) else { return }
+        currentPage += 1
+        presenter?.loadMoreData(page: currentPage, searchQueryText: searchQueryText)
+    }
 }
 
 extension SearchTableViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
-        self.presenter?.searchRepository(searchText: searchController.searchBar.text)
+        self.searchQueryText = searchController.searchBar.text ?? "all"
+        self.presenter?.searchRepository(searchText: searchQueryText)
     }
 }
 
 extension SearchTableViewController: SearchViewProtocol {
-    func cleanTableView() {
+    func seachLimitExceeded() {
+        self.shouldShowLoadingCell = false
+        self.tableView.reloadData()
+    }
+    
+    func checkTotalItemsCount(totalCount: Int) {
+        self.shouldShowLoadingCell =  repositories.count < totalCount ? true : false
+    }
+    
+    
+    func showLoadMoreDataResult(repositories: [Repository]) {
+        self.repositories += repositories
+        self.tableView.reloadData()
+    }
+    
+    func cleanUpTableView() {
         self.repositories = [Repository]()
         self.tableView.reloadData()
         self.tableView.backgroundView  = nil
@@ -94,21 +135,13 @@ extension SearchTableViewController: SearchViewProtocol {
         self.activityIndicator.stopAnimating()
     }
     
-    func showResultError() {
-        
+    func showNotFindedDataMensage(msg:String) {
+        self.shouldShowLoadingCell = false
+        self.repositories = [Repository]()
+        self.tableView.reloadData()
         let noDataLabel: UILabel  = UILabel(frame: CGRect(x: 0, y: 0, width: self.tableView.bounds.size.width, height: self.tableView.bounds.size.height))
-        noDataLabel.text          = ""
-        noDataLabel.textColor     = UIColor.black
-        noDataLabel.textAlignment = .center
-        self.tableView.backgroundView  = noDataLabel
-        self.tableView.separatorStyle  = .none
-    }
-    
-    func showNoSearchResultMsg() {
-        
-        let noDataLabel: UILabel  = UILabel(frame: CGRect(x: 0, y: 0, width: self.tableView.bounds.size.width, height: self.tableView.bounds.size.height))
-        noDataLabel.text          = "We couldn’t find any repositories matching"
-        noDataLabel.textColor     = UIColor.black
+        noDataLabel.text          = msg
+        noDataLabel.textColor     = UIColor.white
         noDataLabel.textAlignment = .center
         self.tableView.backgroundView  = noDataLabel
         self.tableView.separatorStyle  = .none
@@ -119,14 +152,9 @@ extension SearchTableViewController: SearchViewProtocol {
         performSegue(withIdentifier: "showRepositoryDetail", sender: repository)
     }
     
-    func showRepositories(repositories: [Repository]) {
-        self.repositories = repositories
-        self.tableView.backgroundView = nil
-        self.tableView.reloadData()
-    }
-    
     func showSearchResult(findedRepositories: [Repository]) {
         self.repositories = findedRepositories
+        self.shouldShowLoadingCell = true
         self.tableView.backgroundView = nil
         self.tableView.reloadData()
     }

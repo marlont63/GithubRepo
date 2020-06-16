@@ -14,7 +14,7 @@ class RequestService {}
 
 extension RequestService {
     
-    public func send<Request: GithubApiRequest>(_ request: Request, success: @escaping (_ response: [Repository]) -> Void, failure: @escaping (_ error: GithubError) -> Void) {
+    public func send<Request: GithubApiRequest>(_ request: Request, success: @escaping (_ response: SearchRepositoryResponse) -> Void, failure: @escaping (_ error: GithubError) -> Void) {
         
         let serverRequest: URLRequest
         
@@ -57,18 +57,20 @@ extension RequestService {
                 
                 let decode = JSONDecoder()
                 
-                var requestResult = [Repository]()
+                do {
                     
-                if let response = try? decode.decode([Repository].self, from: data) {
-                    requestResult = response
-                }else if let response = try? decode.decode(SearchRepository.self, from: data) {
-                    requestResult = response.items
-                }
-                
-                DispatchQueue.main.async {
-                    success(requestResult)
-                }
+                    let response = try decode.decode(SearchRepositoryResponse.self, from: data)
                     
+                    DispatchQueue.main.async {
+                        success(response)
+                    }
+                    
+                }catch {
+                    DispatchQueue.main.async {
+                        failure(.wrongJsonFormat)
+                    }
+                }
+
             default:
                 DispatchQueue.main.async {
                     failure(.nonURLResponse(urlResponse))
@@ -77,5 +79,43 @@ extension RequestService {
         }
         
         task.resume()
+    }
+    
+    
+    func downloadImage(from url: URL ,success: @escaping (_ image: UIImage) -> Void, failure: @escaping (_ error: GithubError) -> Void){
+        
+        let session = URLSession(configuration: .default)
+        
+        let downloadPicTask = session.dataTask(with: url) { (data, urlResponse, error) in
+            
+            switch (data, urlResponse, error) {
+             case (let data, let urlResponse as HTTPURLResponse, let error?):
+                 urlResponse.showLog(from: data)
+                 DispatchQueue.main.async {
+                    failure(.connectionError(error))
+                }
+             case (let data?, let urlResponse as HTTPURLResponse, _):
+                 urlResponse.showLog(from: data)
+                 
+                 guard 200..<300 ~= urlResponse.statusCode else {
+                     DispatchQueue.main.async {
+                         failure(.wrongStatusCode(urlResponse.statusCode))
+                     }
+                     return
+                 }
+                 
+                 if let image = UIImage(data: data) {
+                    success(image)
+                 }
+            
+             default:
+                DispatchQueue.main.async {
+                    failure(.nonURLResponse(urlResponse))
+                }
+            }
+        }
+
+        downloadPicTask.resume()
+
     }
 }
