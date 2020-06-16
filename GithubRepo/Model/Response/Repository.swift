@@ -7,19 +7,36 @@
 //
 
 import Foundation
+import UIKit
 
-class Repository: Codable {
+struct Repository: Codable {
     var id: Int
     var name: String
-    var full_name: String
+    var fullName: String
     var description: String?
     var language: String?
-    var created_at: String?
-    var updated_at: String?
+    var createdAt: String?
+    var updatedAt: String?
     var owner:owner
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case fullName = "full_name"
+        case description
+        case language
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+        case owner
+    }
 }
 
 struct owner: Codable {
-    var avatar_url:String?
+    var avatarUrl:String?
     var type: String
+    
+    enum CodingKeys: String, CodingKey {
+        case avatarUrl = "avatar_url"
+        case type
+    }
 }

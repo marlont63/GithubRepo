@@ -7,9 +7,16 @@
 //
 
 import Foundation
+import UIKit
 
 struct SearchRepositoryResponse: Codable {
-    var total_count: Int
-    var incomplete_results: Bool
+    var totalCount: Int
+    var incompleteResults: Bool
     var items: [Repository]
+    
+    enum CodingKeys: String, CodingKey {
+        case totalCount = "total_count"
+        case incompleteResults = "incomplete_results"
+        case items
+    }
 }

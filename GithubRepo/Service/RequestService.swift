@@ -116,6 +116,5 @@ extension RequestService {
         }
 
         downloadPicTask.resume()
-
     }
 }

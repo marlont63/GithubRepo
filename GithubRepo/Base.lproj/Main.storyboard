@@ -16,7 +16,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <activityIndicatorView key="tableFooterView" hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" id="8u6-15-Oxx">
-                            <rect key="frame" x="0.0" y="126" width="375" height="44"/>
+                            <rect key="frame" x="0.0" y="196" width="375" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="color" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </activityIndicatorView>
@@ -76,6 +76,26 @@
                                     <outlet property="repositoryDescription" destination="BzP-yG-wwS" id="bos-H9-xaI"/>
                                     <outlet property="repositoryImage" destination="goA-69-I4D" id="OHV-CB-idU"/>
                                     <outlet property="repositoryName" destination="ex2-PI-ORB" id="yCk-DM-Q72"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="LoadingCell" rowHeight="70" id="CwQ-MY-07n" customClass="LoadingCell" customModule="GithubRepo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="98" width="375" height="70"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="CwQ-MY-07n" id="Yie-Uc-fU6">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="EKZ-kh-Mhj">
+                                            <rect key="frame" x="177.5" y="25" width="20" height="20"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="EKZ-kh-Mhj" firstAttribute="centerY" secondItem="Yie-Uc-fU6" secondAttribute="centerY" id="elv-nG-ipw"/>
+                                        <constraint firstItem="EKZ-kh-Mhj" firstAttribute="centerX" secondItem="Yie-Uc-fU6" secondAttribute="centerX" id="jX3-1G-OiS"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="activityIndicator" destination="EKZ-kh-Mhj" id="ZHO-Tn-dES"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

@@ -18,12 +18,13 @@ class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
     let NOT_FINDED_DATA_MENSAGE = "We couldn’t find any repositories matching"
     let SEARCH_LIMIT_EXCEEDED = "Search limit exceeded"
     
+    let requestService = RequestService()
+    
     func  getGithubRepositories() {
         
         let searchRepositoryRequest = SearchRepositoryRequest(searchQuery: DEFAULT_QUERY_TEXT, page:DEFAULT_PAGE, itemsPerPage:DEFAULT_ITEMS_PER_PAGE)
-        let requestService = RequestService()
                 
-        requestService.send(searchRepositoryRequest, success: { (searchRepositoriesResponse) in
+        self.requestService.send(searchRepositoryRequest, success: { (searchRepositoriesResponse) in
             
             if(searchRepositoriesResponse.items.count > 0) {
                 self.view?.stopActivityIndicator()
@@ -35,7 +36,7 @@ class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
             
         }) { (githubError) in
             self.view?.stopActivityIndicator()
-            self.view?.seachLimitExceeded()
+            self.view?.seachLimitExceededShowMsg(msg: self.SEARCH_LIMIT_EXCEEDED)
         }
     }
     
@@ -46,13 +47,12 @@ class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
             self.view?.cleanUpTableView()
             let defaultPage = "1"
             let searchRepositoryRequest = SearchRepositoryRequest(searchQuery: searchText, page:defaultPage, itemsPerPage:DEFAULT_ITEMS_PER_PAGE)
-            let requestService = RequestService()
                     
-            requestService.send(searchRepositoryRequest, success: { (searchRepositoriesResponse) in
+            self.requestService.send(searchRepositoryRequest, success: { (searchRepositoriesResponse) in
                 
                 if(searchRepositoriesResponse.items.count > 0) {
                     self.view?.stopActivityIndicator()
-                    self.view?.checkTotalItemsCount(totalCount: searchRepositoriesResponse.total_count)
+                    self.view?.checkTotalItemsCount(totalCount: searchRepositoriesResponse.totalCount)
                     self.view?.showSearchResult(findedRepositories: searchRepositoriesResponse.items)
                 }else {
                     self.view?.stopActivityIndicator()
@@ -61,7 +61,7 @@ class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
                 
             }) { (githubError) in
                 self.view?.stopActivityIndicator()
-                self.view?.seachLimitExceeded()
+                self.view?.seachLimitExceededShowMsg(msg: self.SEARCH_LIMIT_EXCEEDED)
             }
         }
     }
@@ -74,13 +74,12 @@ class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
         }
         
         let searchRepositoryRequest = SearchRepositoryRequest(searchQuery: loadMoreDataText, page:page.description, itemsPerPage:DEFAULT_ITEMS_PER_PAGE )
-        let requestService = RequestService()
         
-        requestService.send(searchRepositoryRequest, success: { (searchRepositoriesResponse) in
+        self.requestService.send(searchRepositoryRequest, success: { (searchRepositoriesResponse) in
             
             if(searchRepositoriesResponse.items.count > 0) {
                 self.view?.stopActivityIndicator()
-                self.view?.checkTotalItemsCount(totalCount: searchRepositoriesResponse.total_count)
+                self.view?.checkTotalItemsCount(totalCount: searchRepositoriesResponse.totalCount)
                 self.view?.showLoadMoreDataResult(repositories: searchRepositoriesResponse.items)
             }else {
                 self.view?.stopActivityIndicator()

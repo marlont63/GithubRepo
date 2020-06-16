@@ -30,8 +30,8 @@ class RepositoryDetailViewController: UIViewController {
     func setUI() {
         
         let language = repository.language ?? "Not available"
-        let created = repository.created_at?.formatDate() ?? "Not available"
-        let updated = repository.updated_at?.formatDate() ?? "Not available"
+        let created = repository.createdAt?.formatDate() ?? "Not available"
+        let updated = repository.updatedAt?.formatDate() ?? "Not available"
         
         self.repositoryName.text = repository.name
         self.repositoryDescription.text = repository.description
@@ -40,7 +40,7 @@ class RepositoryDetailViewController: UIViewController {
         self.repositoryCreatedAt.text = "Created: \(created)"
         self.repositoryUpdatedAt.text = "Updated: \(updated)"
         
-        if let imageURL = repository.owner.avatar_url {
+        if let imageURL = repository.owner.avatarUrl {
             if let url = URL(string: imageURL) {
                 
                 let requestService = RequestService()

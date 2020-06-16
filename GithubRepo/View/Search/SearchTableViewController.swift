@@ -17,6 +17,7 @@ protocol SearchViewProtocol: BaseViewProtocol {
     func stopActivityIndicator()
     func cleanUpTableView()
     func seachLimitExceeded()
+    func seachLimitExceededShowMsg(msg:String)
     func checkTotalItemsCount(totalCount: Int)
     func showLoadMoreDataResult(repositories: [Repository])
 }
@@ -42,6 +43,7 @@ class SearchTableViewController: BaseViewController {
         search.searchResultsUpdater = self
         search.obscuresBackgroundDuringPresentation = false
         search.searchBar.placeholder = "Search github repository"
+        search.automaticallyShowsCancelButton = false
         navigationItem.searchController = search
     }
     
@@ -55,7 +57,9 @@ class SearchTableViewController: BaseViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if isLoadingIndexPath(indexPath) {
-            return LoadingCell(style: .default, reuseIdentifier: "loading")
+            let loadingCell = tableView.dequeueReusableCell(withIdentifier: "LoadingCell", for: indexPath) as! LoadingCell
+            loadingCell.activityIndicator.startAnimating()
+            return loadingCell
         }else {
             
             if let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? RepositoryTableViewCell {
@@ -115,7 +119,6 @@ extension SearchTableViewController: SearchViewProtocol {
         self.shouldShowLoadingCell =  repositories.count < totalCount ? true : false
     }
     
-    
     func showLoadMoreDataResult(repositories: [Repository]) {
         self.repositories += repositories
         self.tableView.reloadData()
@@ -139,9 +142,13 @@ extension SearchTableViewController: SearchViewProtocol {
         self.shouldShowLoadingCell = false
         self.repositories = [Repository]()
         self.tableView.reloadData()
+        showTableViewErrorMsg(msg: msg)
+    }
+    
+    func showTableViewErrorMsg(msg:String) {
         let noDataLabel: UILabel  = UILabel(frame: CGRect(x: 0, y: 0, width: self.tableView.bounds.size.width, height: self.tableView.bounds.size.height))
         noDataLabel.text          = msg
-        noDataLabel.textColor     = UIColor.white
+        noDataLabel.textColor     = UIColor.red
         noDataLabel.textAlignment = .center
         self.tableView.backgroundView  = noDataLabel
         self.tableView.separatorStyle  = .none
@@ -157,6 +164,13 @@ extension SearchTableViewController: SearchViewProtocol {
         self.shouldShowLoadingCell = true
         self.tableView.backgroundView = nil
         self.tableView.reloadData()
+    }
+    
+    func seachLimitExceededShowMsg(msg:String) {
+        self.shouldShowLoadingCell = false
+        self.repositories = [Repository]()
+        self.tableView.reloadData()
+        showTableViewErrorMsg(msg: msg)
     }
 }
 

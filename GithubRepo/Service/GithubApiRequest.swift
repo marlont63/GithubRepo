@@ -58,14 +58,13 @@ extension GithubApiRequest {
     }
     
     public var headers: HTTPHeaders {
-        return ["Content-Type": "application/x-www-form-urlencoded"]
+        return ["Content-Type": "application/x-www-form-urlencoded", "Authorization": "token 07d4d9500c88d26883ff4c342ecfdb86cd6320db"]
     }
     
     public var sampleData: Data {
         return Data()
     }
 }
-
 
 extension GithubApiRequest {
     

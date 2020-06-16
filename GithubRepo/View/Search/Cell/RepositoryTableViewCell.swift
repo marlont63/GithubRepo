@@ -15,15 +15,16 @@ class RepositoryTableViewCell: UITableViewCell {
     @IBOutlet weak var repositoryName: UILabel!
     @IBOutlet weak var repositoryDescription: UILabel!
     
+    let requestService = RequestService()
+    
     func config(repository:Repository) {
         self.repositoryName.text = repository.name
         self.repositoryDescription.text = repository.description
         
-        if let imageURL = repository.owner.avatar_url {
+        if let imageURL = repository.owner.avatarUrl {
             if let url = URL(string: imageURL) {
                 
-                let requestService = RequestService()
-                requestService.downloadImage(from: url, success: { (avatarImage) in
+                self.requestService.downloadImage(from: url, success: { (avatarImage) in
                     DispatchQueue.main.async {
                         self.repositoryImage.image = avatarImage
                     }
