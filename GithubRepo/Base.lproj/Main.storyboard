@@ -74,7 +74,7 @@
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="repositoryDescription" destination="BzP-yG-wwS" id="bos-H9-xaI"/>
-                                    <outlet property="repositoryImage" destination="goA-69-I4D" id="OHV-CB-idU"/>
+                                    <outlet property="repositoryImage" destination="goA-69-I4D" id="eiA-LC-CbC"/>
                                     <outlet property="repositoryName" destination="ex2-PI-ORB" id="yCk-DM-Q72"/>
                                 </connections>
                             </tableViewCell>

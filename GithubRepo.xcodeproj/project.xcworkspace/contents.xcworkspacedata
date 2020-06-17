@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/marlonraschidtavarezparra/Documents/GithubRepoPrueba/GithubRepo/GithubRepo/Constants.swift">
+   </FileRef>
+   <FileRef
       location = "self:GithubRepo.xcodeproj">
    </FileRef>
 </Workspace>

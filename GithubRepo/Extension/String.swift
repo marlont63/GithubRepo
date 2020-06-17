@@ -19,4 +19,15 @@ extension String  {
       return dateFormatter.string(from: formattedDate)
     }
     
+    func localized() -> String {
+        
+        if let path = Bundle.main.path(forResource: Constants.defaultLanguage, ofType: "lproj"),
+            let bundle = Bundle(path: path) {
+            
+            return NSLocalizedString(self, tableName: nil, bundle: bundle, value: "", comment: "")
+        } else {
+            return self
+        }
+    }
+    
 }

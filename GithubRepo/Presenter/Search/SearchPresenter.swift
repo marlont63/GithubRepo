@@ -11,18 +11,11 @@ import Foundation
 
 class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
     
-    let DEFAULT_ITEMS_PER_PAGE = "10"
-    let DEFAULT_QUERY_TEXT = "all"
-    let DEFAULT_PAGE = "1"
-    
-    let NOT_FINDED_DATA_MENSAGE = "We couldn’t find any repositories matching"
-    let SEARCH_LIMIT_EXCEEDED = "Search limit exceeded"
-    
     let requestService = RequestService()
     
     func  getGithubRepositories() {
         
-        let searchRepositoryRequest = SearchRepositoryRequest(searchQuery: DEFAULT_QUERY_TEXT, page:DEFAULT_PAGE, itemsPerPage:DEFAULT_ITEMS_PER_PAGE)
+        let searchRepositoryRequest = SearchRepositoryRequest(searchQuery: Constants.defaultQueryText, page:Constants.defaultPage, itemsPerPage:Constants.defaultItemsPerPage)
                 
         self.requestService.send(searchRepositoryRequest, success: { (searchRepositoriesResponse) in
             
@@ -31,12 +24,12 @@ class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
                 self.view?.showSearchResult(findedRepositories: searchRepositoriesResponse.items)
             }else {
                 self.view?.stopActivityIndicator()
-                self.view?.showNotFindedDataMensage(msg: self.NOT_FINDED_DATA_MENSAGE)
+                self.view?.showNotFindedDataMensage(msg: "NOT_FINDED_DATA_MENSAGE".localized())
             }
             
         }) { (githubError) in
             self.view?.stopActivityIndicator()
-            self.view?.seachLimitExceededShowMsg(msg: self.SEARCH_LIMIT_EXCEEDED)
+            self.view?.seachLimitExceededShowMsg(msg: "SEARCH_LIMIT_EXCEEDED".localized())
         }
     }
     
@@ -46,7 +39,7 @@ class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
             self.view?.startActivityIndicator()
             self.view?.cleanUpTableView()
             let defaultPage = "1"
-            let searchRepositoryRequest = SearchRepositoryRequest(searchQuery: searchText, page:defaultPage, itemsPerPage:DEFAULT_ITEMS_PER_PAGE)
+            let searchRepositoryRequest = SearchRepositoryRequest(searchQuery: searchText, page:defaultPage, itemsPerPage:Constants.defaultItemsPerPage)
                     
             self.requestService.send(searchRepositoryRequest, success: { (searchRepositoriesResponse) in
                 
@@ -56,24 +49,24 @@ class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
                     self.view?.showSearchResult(findedRepositories: searchRepositoriesResponse.items)
                 }else {
                     self.view?.stopActivityIndicator()
-                    self.view?.showNotFindedDataMensage(msg: self.NOT_FINDED_DATA_MENSAGE)
+                    self.view?.showNotFindedDataMensage(msg: "NOT_FINDED_DATA_MENSAGE".localized())
                 }
                 
             }) { (githubError) in
                 self.view?.stopActivityIndicator()
-                self.view?.seachLimitExceededShowMsg(msg: self.SEARCH_LIMIT_EXCEEDED)
+                self.view?.seachLimitExceededShowMsg(msg: "SEARCH_LIMIT_EXCEEDED".localized())
             }
         }
     }
     
     func loadMoreData(page: Int, searchQueryText: String) {
         
-        var loadMoreDataText = DEFAULT_QUERY_TEXT
+        var loadMoreDataText = Constants.defaultQueryText
         if(searchQueryText != "") {
-            loadMoreDataText = DEFAULT_QUERY_TEXT
+            loadMoreDataText = searchQueryText
         }
         
-        let searchRepositoryRequest = SearchRepositoryRequest(searchQuery: loadMoreDataText, page:page.description, itemsPerPage:DEFAULT_ITEMS_PER_PAGE )
+        let searchRepositoryRequest = SearchRepositoryRequest(searchQuery: loadMoreDataText, page:page.description, itemsPerPage:Constants.defaultItemsPerPage)
         
         self.requestService.send(searchRepositoryRequest, success: { (searchRepositoriesResponse) in
             
@@ -83,7 +76,7 @@ class SearchPresenter <T: SearchViewProtocol>: BasePresenter<T> {
                 self.view?.showLoadMoreDataResult(repositories: searchRepositoriesResponse.items)
             }else {
                 self.view?.stopActivityIndicator()
-                self.view?.showNotFindedDataMensage(msg: self.NOT_FINDED_DATA_MENSAGE)
+                self.view?.showNotFindedDataMensage(msg: "NOT_FINDED_DATA_MENSAGE".localized())
             }
             
         }) { (githubError) in

@@ -1,0 +1,17 @@
+/* 
+  Localizable.strings
+  GithubRepo
+
+  Created by Marlon Raschid Tavarez Parra on 17/06/2020.
+  Copyright © 2020 Marlon Raschid Tavarez Parra. All rights reserved.
+*/
+
+"NOT_FINDED_DATA_MENSAGE" = "We couldn’t find any repositories matching";
+"SEARCH_LIMIT_EXCEEDED" = "Search limit exceeded";
+
+"NOT_AVAILABLE" = "Not available";
+"TYPE" = "Type:";
+"LANGUAGE" = "Language: ";
+"CREATED" = "Created: ";
+"UPDATE" = "Updated: ";
+

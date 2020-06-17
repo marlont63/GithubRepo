@@ -29,16 +29,16 @@ class RepositoryDetailViewController: UIViewController {
     
     func setUI() {
         
-        let language = repository.language ?? "Not available"
-        let created = repository.createdAt?.formatDate() ?? "Not available"
-        let updated = repository.updatedAt?.formatDate() ?? "Not available"
+        let language = repository.language ?? "NOT_AVAILABLE".localized()
+        let created = repository.createdAt?.formatDate() ?? "NOT_AVAILABLE".localized()
+        let updated = repository.updatedAt?.formatDate() ?? "NOT_AVAILABLE".localized()
         
         self.repositoryName.text = repository.name
         self.repositoryDescription.text = repository.description
-        self.repositoryType.text = "Type: \(repository.owner.type)"
-        self.repositoryLanguage.text = "Language: \(language)"
-        self.repositoryCreatedAt.text = "Created: \(created)"
-        self.repositoryUpdatedAt.text = "Updated: \(updated)"
+        self.repositoryType.text = "TYPE".localized() + repository.owner.type
+        self.repositoryLanguage.text = "LANGUAGE".localized() + language
+        self.repositoryCreatedAt.text = "CREATED".localized() +  created
+        self.repositoryUpdatedAt.text = "UPDATE".localized() + updated
         
         if let imageURL = repository.owner.avatarUrl {
             if let url = URL(string: imageURL) {
