@@ -16,6 +16,6 @@ class LoadingCell : UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = UIColor.clear
-        activityIndicator.color = UIColor.white
+        activityIndicator.color = UIColor.green
     }
 }
