@@ -95,7 +95,6 @@ extension RequestService {
                     failure(.connectionError(error))
                 }
              case (let data?, let urlResponse as HTTPURLResponse, _):
-                 urlResponse.showLog(from: data)
                  
                  guard 200..<300 ~= urlResponse.statusCode else {
                      DispatchQueue.main.async {

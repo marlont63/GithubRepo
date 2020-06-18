@@ -17,10 +17,12 @@ class RepositoryTableViewCell: UITableViewCell {
     @IBOutlet weak var repositoryDescription: UILabel!
     
     let requestService = RequestService()
+    var imageUrl: String?
     
     func config(repository:Repository) {
         self.repositoryName.text = repository.name
         self.repositoryDescription.text = repository.description
+        self.imageUrl = repository.owner.avatarUrl
         
         if let imageURL = repository.owner.avatarUrl {
             if let url = URL(string: imageURL) {
@@ -34,7 +36,9 @@ class RepositoryTableViewCell: UITableViewCell {
                 
         func setImage(_ image: UIImage) {
             DispatchQueue.main.async {
-                self.repositoryImage.image = image
+                if(self.imageUrl == url.absoluteString) {
+                    self.repositoryImage.image = image
+                }
             }
         }
         

@@ -160,9 +160,9 @@ extension SearchTableViewController: SearchViewProtocol {
     }
     
     func showSearchResult(findedRepositories: [Repository]) {
+        self.tableView.backgroundView = nil
         self.repositories = findedRepositories
         self.shouldShowLoadingCell = true
-        self.tableView.backgroundView = nil
         self.tableView.reloadData()
     }
     

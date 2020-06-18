@@ -11,11 +11,9 @@ import UIKit
 
 enum Constants {
     
-    static let defaultItemsPerPage = "10"
+    static let defaultItemsPerPage = "20"
     static let defaultQueryText  = "all"
     static let defaultPage = "1"
-    
     static let defaultLanguage = "en"
-    
     static let defaultApiToken = ""
 }
