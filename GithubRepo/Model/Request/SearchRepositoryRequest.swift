@@ -21,25 +21,22 @@ class SearchRepositoryRequest {
 }
 
 extension SearchRepositoryRequest: GithubApiRequest {
-    
+    typealias Response = SearchRepositoryResponse
     var path: URL {
-        
-        let urlPath = "search/repositories"
-        let searchQuery = self.searchQuery.replacingOccurrences(of: " ", with: "+")
-        let parameters = [
+        let urlPath: String = "search/repositories"
+        let searchQuery: String = self.searchQuery.replacingOccurrences(of: " ", with: "+")
+        let parameters: [String: String] = [
             "q":searchQuery,
             "sort": "stars",
             "order": "desc",
             "page":page,
             "per_page":itemsPerPage
         ]
-        var completeURLComponents = URLComponents(string: baseURL.absoluteString + urlPath)!
+        var completeURLComponents: URLComponents = URLComponents(string: baseURL.absoluteString + urlPath)!
         completeURLComponents.queryItems = parameters.map({ (key, value) -> URLQueryItem in
             URLQueryItem(name: key, value: String(value))
         })
         
         return completeURLComponents.url ?? baseURL
     }
-    
-    typealias Response = SearchRepositoryResponse
 }

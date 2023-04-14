@@ -12,12 +12,10 @@ extension URLRequest {
     
     func showLog() {
         var body: String? = nil
-        
-        if let json = httpBody {
+        if let json: Data = httpBody {
             body = String(data: json, encoding: .utf8)
         }
-        
-        let logMessage =
+        let logMessage: String =
         """
         ====== REQUEST ======
         Method: \(httpMethod ?? "NOT DEFINED")
@@ -25,7 +23,6 @@ extension URLRequest {
         HEADERS: \(allHTTPHeaderFields?.description ?? "NOT DEFINED")
         BODY: \(body ?? "NOT DEFINED")
         """
-        
         print(logMessage)
     }
 }

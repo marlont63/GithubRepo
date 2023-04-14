@@ -9,10 +9,6 @@
 import Foundation
 import UIKit
 
-protocol BaseViewProtocol: class {
-}
+protocol BaseViewProtocol: class {}
 
-
-class BaseViewController : UITableViewController, BaseViewProtocol {
-    
-}
+class BaseViewController : UIViewController, BaseViewProtocol {}

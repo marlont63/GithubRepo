@@ -9,10 +9,8 @@
 import Foundation
 import UIKit
 
-class CachedImageView: UIImageView {
-    
+class CachedImageView: UIImageView {    
     private var imageEndPoint: String?
-    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -21,7 +19,4 @@ class CachedImageView: UIImageView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    
-    
 }

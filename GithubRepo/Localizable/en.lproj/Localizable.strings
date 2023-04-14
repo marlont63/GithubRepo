@@ -14,4 +14,6 @@
 "LANGUAGE" = "Language: ";
 "CREATED" = "Created: ";
 "UPDATE" = "Updated: ";
+"LAT" = "Latitude";
+"LON" = "Longitude";
 

@@ -27,26 +27,19 @@ enum Result<T: Codable> {
 }
 
 protocol GithubApiRequest {
-    
     typealias HTTPHeaders = [String : String]
-    
     var baseURL: URL { get }
-    
     var path: URL { get }
-    
     var method: HTTPMethod { get }
-    
     var headers: HTTPHeaders { get }
-    
     var timeout: TimeInterval { get }
-    
     var sampleData: Data { get }
 }
 
 extension GithubApiRequest {
-    
     public var baseURL: URL {
-        return URL(string: "https://api.github.com/")!
+        return URL(string: "https://apidev.meep.me/tripplan/api/v1/routers/lisboa/resources")!
+        //return URL(string: "https://api.github.com/")!
     }
     
     public var method: HTTPMethod {
@@ -58,7 +51,7 @@ extension GithubApiRequest {
     }
     
     public var headers: HTTPHeaders {
-        return ["Content-Type": "application/x-www-form-urlencoded", "Authorization": Constants.defaultApiToken]
+        return ["User-Agent": "Meep/iOS/1.0.0"]
     }
     
     public var sampleData: Data {
@@ -67,17 +60,14 @@ extension GithubApiRequest {
 }
 
 extension GithubApiRequest {
-    
     func build() throws -> URLRequest {
-        
-        var request = URLRequest(url: path)
+        var request: URLRequest = URLRequest(url: path)
         request.timeoutInterval = timeout
         request.httpMethod = method.rawValue
         
         headers.forEach { key, value in
             request.setValue(value, forHTTPHeaderField: key)
         }
-        
         return request
     }
 }
